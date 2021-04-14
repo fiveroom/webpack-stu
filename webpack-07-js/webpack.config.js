@@ -8,7 +8,7 @@ module.exports = {
         filename: 'js/main.js',
         path: resolve(__dirname, 'dist')
     },
-    mode: 'development',
+    mode: 'none',
     module: {
         rules: [
             // 语法检查
@@ -44,30 +44,46 @@ module.exports = {
                 exclude: /node_modules/,
                 options: {
                     // 预设：指示babel做怎样的兼容性处理
-                    presets: [[
-                        "@babel/preset-env",
-                        {
-                            useBuiltIns: 'usage',
-                            corejs: {
-                                version: 3
-                            },
-                            // 指定兼容性做到哪个版本的浏览器
-                            targets:{
-                                chrome: '60',
-                                firefox: '60',
-                                ie: '9',
-                                safari: '10',
-                                edge: '17'
+                    presets: [
+                        [
+                            "@babel/preset-env",  // es环境
+                            {
+                                useBuiltIns: 'usage',
+                                corejs: {
+                                    version: 3
+                                },
+                                // 指定兼容性做到哪个版本的浏览器
+                                targets: {
+                                    chrome: '60',
+                                    firefox: '60',
+                                    ie: '9',
+                                    safari: '10',
+                                    edge: '17'
+                                }
                             }
-                        }
-                    ]]
+                        ]
+                    ],
+                    catchDirectory: true,
+                    plugins: ["@babel/plugin-proposal-class-properties"]
                 }
             }
         ]
     },
+    // 部署环境配置
+    /**
+     * 默认为web ，打包出的默认为箭头函数
+     * - 传递多个目标时，将使用共同的特性子集
+     */
+    target: ['web', 'es5'],
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'index.html'
+            template: 'index.html',
+            minify: {
+                // 移除空格
+                collapseWhitespace: true,
+                // 移除注释
+                removeComments: true
+            }
         })
     ]
 }
