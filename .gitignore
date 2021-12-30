@@ -1,8 +1,7 @@
 
 # dependencies
 /node_modules
-*/*/node_modules
-*/node_modules
+/**/node_modules
 
 
 package-lock.json
@@ -10,3 +9,10 @@ package-lock.json
 
 */dist
 */index.html
+
+
+/**/lib-esm
+
+.idea
+
+/storage

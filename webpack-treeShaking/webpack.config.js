@@ -1,27 +1,36 @@
 // 使用多入口
-const { resolve } = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const {resolve} = require('path');
 
 module.exports = {
-    entry: './index.js',
-    output: {
-        filename: 'js/[name].[contenthash:10].js',
-        path: resolve(__dirname, 'dist')
+    entry: {
+        'string/string': './src/string/string.ts',
+        'tree/tree': './src/tree/tree.ts',
+        'index': './src/index.ts'
     },
-    plugins: [
-        new HtmlWebpackPlugin({
-            title: '按需加载',
-            template: 'index.html'
-        }),
-    ],
-    /**
-     * - node_modules中代码单独打包一个chunk最终输出
-     * - 自动分析多入口文件中是否包含公共的文件（体积大于 20kb）。若有会打包成一个单独的chunk
-     */
-    optimization:{
-        splitChunks: {
-            chunks: 'all'
+    output: {
+        filename: '[name].js',
+        path: resolve(__dirname, 'dist'),
+        library: {
+            type: "umd",
+            name: 'MyLibrary'
         }
     },
-    mode: 'production',
+    resolve: {
+        extensions: ['.ts'],
+        alias: {
+            'cn-tools': resolve(__dirname, 'src/')
+        }
+    },
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                exclude: /node_modules|dist/,
+                use: 'ts-loader'
+            }
+        ]
+    },
+    watch:true,
+    devtool: 'source-map',
+    mode: 'production'
 }
