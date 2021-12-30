@@ -1,4 +1,8 @@
-#head{
-    color: skyblue;
-    display: flex;
+.abc{
+    user-select: unset;
+    transition: all .25s;
+}
+
+:fullscreen{
+    
 }

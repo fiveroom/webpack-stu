@@ -13,6 +13,13 @@ const optimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plug
 
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
+                                    // [
+                                    //     // 查看package.json浏览器环境，默认看生产环境
+                                    //     // browserslist 设置兼容范围
+                                        
+                                    // ]
+
+                               
 module.exports = {
     entry: './index.js',
     output: {
@@ -26,29 +33,15 @@ module.exports = {
             use:
                 [
                     "style-loader",
-                    // {
-                    //     // 分割为单个css文件
-                    //     loader: miniCssExtractPlugin.loader
-                    // },
                     "css-loader",
-                    // {
-                    //     loader: 'postcss-loader',
-                    //     options: {
-                    //         postcssOptions: {
-                    //             plugins: [
-                    //                 [
-                    //                     // 查看package.json浏览器环境，默认看生产环境
-                    //                     // browserslist 设置兼容范围
-                    //                     "postcss-preset-env",
-                    //                     {
-
-                    //                     }
-                    //                 ]
-
-                    //             ]
-                    //         }
-                    //     }
-                    // }
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            postcssOptions: {
+                                plugins: [  "postcss-preset-env" ]
+                            }
+                        }
+                    }
                 ]
         }]
     },
