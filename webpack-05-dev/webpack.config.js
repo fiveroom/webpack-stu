@@ -10,17 +10,18 @@ module.exports = {
     output: {
         filename: "js/[name].js",
         path: path.resolve(__dirname, 'dist'),
-        // publicPath: '/dist/'
+        // publicPath: '/abc'
+        chunkFilename: 'js/[name].chunk.js'
     },
-    mode: "none",
+    mode: "production",
     module: {
         // 链中的每个 loader 都将对资源进行转换 链会逆序执行
         rules: [
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
-                loader:'file-loader',
+                loader: 'file-loader',
                 options: {
-                    outputPath: 'images',
+                    // outputPath: 'images',
                     name: "[hash:10][name].[ext]"
                 }
             }, {
@@ -51,9 +52,16 @@ module.exports = {
         })
     ],
     devServer: {
-        contentBase: path.resolve(__dirname, 'dist'),
+        // contentBase: path.resolve(__dirname, 'dist'),
         // 启用gzip压缩
         compress: true,
-        port: 3000
+        port: 3000,
+        // publicPath: '/abc'
+        // static: {
+        //     directory: path.resolve(__dirname, 'bbb', 'ccc')
+        // }
+    },
+    externals: {
+        lodash: "_"
     }
 }

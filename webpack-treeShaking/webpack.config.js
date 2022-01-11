@@ -1,36 +1,66 @@
 // 使用多入口
-const {resolve} = require('path');
+const { resolve, join } = require('path');
+const webpack = require('webpack')
+const TerserPlugin = require('terser-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const PurgecssPlugin = require('purgecss-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const glob = require('glob-all')
+const CompressionPlugin = require("compression-webpack-plugin");
+const InlineChunkHTMLPlugin = require('react-dev-utils/InlineChunkHtmlPlugin')
 
 module.exports = {
     entry: {
-        'string/string': './src/string/string.ts',
-        'tree/tree': './src/tree/tree.ts',
-        'index': './src/index.ts'
+        'index': './src/index.js'
     },
     output: {
         filename: '[name].js',
         path: resolve(__dirname, 'dist'),
-        library: {
-            type: "umd",
-            name: 'MyLibrary'
+    },
+    devtool: 'source-map',
+    mode: 'development',
+    optimization: {
+        usedExports: true,
+        minimize: true,
+        // minimizer: [
+        //     new TerserPlugin({
+        //         parallel: true,
+        //     }),
+        // ],
+        runtimeChunk: {
+            name: 'runtime',
         }
     },
-    resolve: {
-        extensions: ['.ts'],
-        alias: {
-            'cn-tools': resolve(__dirname, 'src/')
-        }
-    },
+    plugins: [
+        new MiniCssExtractPlugin(),
+        new PurgecssPlugin({
+            // 需要做tree shaking的路径，使用glob
+            paths: glob.sync([
+                `${join(__dirname, 'src')}/**/*`,
+                `${__dirname}/**/*.html`
+            ], { nodir: true }),
+            safelist: () => {
+                return {
+                    standard: ['html']
+                }
+            }
+        }),
+        new HtmlWebpackPlugin({
+            template: 'index.html'
+        }),
+        new CompressionPlugin({
+            test: /\.(css|js)$/
+        }),
+        new InlineChunkHTMLPlugin(HtmlWebpackPlugin, [/^runtime.*\.js$/])
+        // new webpack.optimize.ModuleConcatenationPlugin()
+    ],
     module: {
         rules: [
             {
-                test: /\.ts$/,
-                exclude: /node_modules|dist/,
-                use: 'ts-loader'
+                test: /\.css$/,
+                use: [MiniCssExtractPlugin.loader, "css-loader"],
+                sideEffects: true
             }
         ]
-    },
-    watch:true,
-    devtool: 'source-map',
-    mode: 'production'
+    }
 }
